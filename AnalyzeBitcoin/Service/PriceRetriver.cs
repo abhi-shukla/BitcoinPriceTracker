@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Data;
+using System.Net;
 
 namespace AnalyzeBitcoin.Service
 {
@@ -17,11 +19,16 @@ namespace AnalyzeBitcoin.Service
 
             RestRequest request = new RestRequest(Method.GET);
 
-            RestResponse<BitcoinPrice> response = (RestResponse<BitcoinPrice>) client.Execute<BitcoinPrice>(request);
+            RestResponse<BitcoinPrice> response = null;
 
-            var price = JsonConvert.DeserializeObject<BitcoinPrice>(response.Content);
+            response = (RestResponse<BitcoinPrice>)client.Execute<BitcoinPrice>(request);
 
-            return price;
+            if (response.ResponseStatus == ResponseStatus.Error && response.StatusCode != HttpStatusCode.OK)
+            {
+                return null;
+            }
+
+            return JsonConvert.DeserializeObject<BitcoinPrice>(response.Content);
         }
     }
 }

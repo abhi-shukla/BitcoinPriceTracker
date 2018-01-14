@@ -29,12 +29,15 @@ namespace AnalyzeBitcoin
         private static void OnTimedEvent(object source, ElapsedEventArgs e)
         {
             var current = PriceRetriver.GetCurrentBitcoinPrice();
-            string first = current.bpi.usd.rate_float.ToString();
-            string second = current.time.updatedISO;
-            string csvRow = string.Format("{0},{1}{2}", first, second, Environment.NewLine);
 
-            File.AppendAllText(file, csvRow);
+            if (current != null)
+            {
+                string first = current.bpi.usd.rate_float.ToString();
+                string second = current.time.updatedISO;
+                string csvRow = string.Format("{0},{1}{2}", first, second, Environment.NewLine);
 
+                File.AppendAllText(file, csvRow);
+            }
         }
     }
 }
